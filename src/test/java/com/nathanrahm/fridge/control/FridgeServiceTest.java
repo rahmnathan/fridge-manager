@@ -1,13 +1,16 @@
 package com.nathanrahm.fridge.control;
 
 import com.nathanrahm.fridge.data.Fridge;
+import com.nathanrahm.fridge.data.FridgeRequest;
 import com.nathanrahm.fridge.exception.FridgeManagerException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,5 +62,33 @@ public class FridgeServiceTest {
 
         Fridge resultFridge = fridgeService.getFridgeById(fridgeId);
         assertEquals(newName, resultFridge.getName());
+    }
+
+    @Test
+    public void deleteFridgeTest() {
+        String id = fridgeService.storeFridge(new FridgeRequest(UUID.randomUUID().toString()));
+
+        fridgeService.deleteFridge(id);
+
+        assertThrows(FridgeManagerException.class, () -> fridgeService.getFridgeById(id));
+    }
+
+    @Test
+    public void getFridgeByNameTest() throws FridgeManagerException {
+        String name = UUID.randomUUID().toString();
+
+        fridgeService.storeFridge(new FridgeRequest(name));
+        Fridge fridge = fridgeService.getFridgeByName(name);
+
+        assertNotNull(fridge);
+        assertEquals(name, fridge.getName());
+    }
+
+    @Test
+    public void getFridgesTest() {
+        fridgeService.storeFridge(new FridgeRequest(UUID.randomUUID().toString()));
+
+        List<Fridge> fridges = fridgeService.getFridges(Pageable.unpaged());
+        assertTrue(fridges.size() >= 1);
     }
 }

@@ -14,7 +14,6 @@ import java.util.UUID;
 @Order(1)
 public class CorrelationIdFilter implements Filter {
     private static final String X_CORRELATION_ID = "x-correlation-id";
-    private static final String CLIENT_ADDRESS = "client-address";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -23,9 +22,6 @@ public class CorrelationIdFilter implements Filter {
 
             Optional<String> correlationId = Optional.ofNullable(httpServletRequest.getHeader(X_CORRELATION_ID));
             MDC.put(X_CORRELATION_ID, correlationId.orElse(UUID.randomUUID().toString()));
-
-            String clientAddress = ((HttpServletRequest) servletRequest).getHeader("X-FORWARDED-FOR");
-            MDC.put(CLIENT_ADDRESS, clientAddress);
 
             filterChain.doFilter(httpServletRequest, servletResponse);
         } finally {

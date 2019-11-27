@@ -9,3 +9,18 @@ spring:
       ddl-auto: create-drop
     properties.hibernate.jdbc.lob.non_contextual_creation: true
     show-sql: false
+
+keycloak:
+  auth-server-url: https://login.nathanrahm.com/auth
+  public-client: true
+  realm: FridgeManager
+  resource: fridge-manager
+  security-constraints:
+    - authRoles:
+        - fridgemanager
+      security-collections:
+        - name: "secure stuff"
+          patterns:
+            - "/*"
+  ssl-required: external
+  enabled: false
