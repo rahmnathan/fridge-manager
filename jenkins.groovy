@@ -35,7 +35,7 @@ node {
     stage('Docker Build') {
         sh "'${mvnHome}/bin/mvn' dockerfile:build"
     }
-    withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: 'Dockerhub',
+    withCredentials([[$class : 'UsernamePasswordMultiBinding', credentialsId: 'Dockerhub',
                       usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
         stage('Docker Push') {
             sh "'${mvnHome}/bin/mvn' dockerfile:push -Ddockerfile.username=$USERNAME -Ddockerfile.password='$PASSWORD'"

@@ -5,9 +5,9 @@ import com.nathanrahm.fridge.exception.FridgeManagerCode;
 import com.nathanrahm.fridge.exception.FridgeManagerException;
 import com.nathanrahm.fridge.persistence.FridgeRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class FridgeService {
     private final FridgeRepository repository;
 
@@ -43,6 +44,7 @@ public class FridgeService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    @Transactional
     public String storeFridge(Fridge fridge) {
         com.nathanrahm.fridge.persistence.Fridge fridgeEntity = com.nathanrahm.fridge.persistence.Fridge.fromDTO(fridge);
         String fridgeId = UUID.randomUUID().toString();
@@ -51,5 +53,22 @@ public class FridgeService {
         repository.save(fridgeEntity);
 
         return fridgeId;
+    }
+
+    @Transactional
+    public void deleteFridge(String id) {
+        repository.deleteByFridgeId(id);
+    }
+
+    @Transactional
+    public void updateFridge(String id, Fridge fridge) throws FridgeManagerException {
+        Optional<com.nathanrahm.fridge.persistence.Fridge> fridgeOptional = repository.findByFridgeId(id);
+        if(fridgeOptional.isEmpty()){
+            throw new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist.");
+        }
+
+        com.nathanrahm.fridge.persistence.Fridge fridgeEntity = fridgeOptional.get();
+        fridgeEntity.mergeDTO(fridge);
+        repository.save(fridgeEntity);
     }
 }

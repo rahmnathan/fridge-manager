@@ -53,7 +53,7 @@ public class FridgeController {
         return fridges;
     }
 
-    @PutMapping(value = V1_ROOT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = V1_ROOT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity storeFridge(@RequestBody Fridge fridge) {
         logger.info("Request received to store fridge.");
         logger.debug("Request body: {}", fridge);
@@ -62,5 +62,25 @@ public class FridgeController {
 
         logger.info("Successfully processed request for fridge list.");
         return ResponseEntity.created(URI.create(V1_ROOT + "/" + id)).build();
+    }
+
+    @PatchMapping(value = V1_ROOT + "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateFridge(@RequestBody Fridge fridge, @PathVariable("id") String id) throws FridgeManagerException {
+        logger.info("Request received to update fridge with id: {}.", id);
+        logger.debug("Request body: {}", fridge);
+
+        fridgeService.updateFridge(id, fridge);
+
+        logger.info("Successfully processed request for fridge list.");
+        return ResponseEntity.created(URI.create(V1_ROOT + "/" + id)).build();
+    }
+
+    @DeleteMapping(value = V1_ROOT + "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteFridge(@PathVariable("id") String id) {
+        logger.info("Request received to delete fridge with id: {}.", id);
+
+        fridgeService.deleteFridge(id);
+
+        logger.info("Successfully processed request to delete fridge.");
     }
 }

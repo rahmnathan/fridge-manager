@@ -57,4 +57,8 @@ public class Fridge {
                 .fridgeId(fridge.getId())
                 .build();
     }
+
+    public void mergeDTO(com.nathanrahm.fridge.data.Fridge fridge){
+        this.name = fridge.getName();
+    }
 }
