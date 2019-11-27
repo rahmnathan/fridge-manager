@@ -1,0 +1,4 @@
+spring:
+  application.name: localmovie-media-manager
+  cloud.vault:
+    enabled: false

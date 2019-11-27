@@ -22,8 +22,8 @@ spec:
         app: fridge-manager
     spec:
       containers:
-        - image: {{.Values.fridge.imageRepository}}/localmovie-media-manager:@project.version@
-          imagePullPolicy: Always
+        - image: {{.Values.fridge.imageRepository}}/fridge-manager:@project.version@
+          imagePullPolicy: IfNotPresent
           name: fridge-manager
           resources: {}
           terminationMessagePath: /dev/termination-log
@@ -32,32 +32,13 @@ spec:
             - name: application-config
               mountPath: /opt/localmovie/config
               readOnly: true
-            - name: media1
-              mountPath: /opt/localmovie/1/LocalMedia
-            - name: media2
-              mountPath: /opt/localmovie/2/LocalMedia
-            - name: secrets
-              mountPath: /opt/localmovie/secrets
-              readOnly: true
       volumes:
-        - name: media1
-          nfs:
-            server: 192.168.1.189
-            path: /LocalMedia1
-        - name: media2
-          nfs:
-            server: 192.168.1.189
-            path: /LocalMedia2
         - name: application-config
           configMap:
             name: fridge-manager
             items:
               - key: bootstrap.properties
                 path: bootstrap.properties
-        - name: secrets
-          secret:
-            # Create this secret via: kubectl create secret generic localmovie-firebase-key --from-file=localmovie-firebase-key.json
-            secretName: localmovie-firebase-key
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

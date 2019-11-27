@@ -12,30 +12,34 @@ server:
 
 spring:
   datasource:
-    password: pw123
-    url: "jdbc:postgresql://localhost:5432/localmovies"
-    username: localmovies
+    password: password
+    url: "jdbc:postgresql://postgres:5432/fridge_manager"
+    username: fridge_manager
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     properties.hibernate.jdbc.lob.non_contextual_creation: true
     show-sql: false
 
 keycloak:
-  auth-server-url: https://localmovies.hopto.org/auth
+  auth-server-url: https://login.nathanrahm.com/auth
   public-client: true
-  realm: LocalMovies
-  resource: localmovie-login
+  realm: FridgeManager
+  resource: fridge-manager
   security-constraints:
     - authRoles:
-        - movieuser
+        - fridgemanager
       security-collections:
         - name: "secure stuff"
           patterns:
             - "/*"
   ssl-required: external
   enabled: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
 
 management:
   endpoint:

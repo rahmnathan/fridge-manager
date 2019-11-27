@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  fridge-manager:
+    image: rahmnathan/fridge-manager:1.0
+    ports:
+      - "8080:8080"
+  postgres:
+    image: bitnami/postgresql:11.6.0
+    environment:
+      POSTGRESQL_DATABASE: fridge_manager
+      POSTGRESQL_USERNAME: fridge_manager
+      POSTGRESQL_PASSWORD: password
