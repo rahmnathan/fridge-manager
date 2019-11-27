@@ -5,6 +5,10 @@ logging:
   level:
     com.nathanrahm: info
 
+service:
+  fridgeItemMaximums:
+    soda: 12
+
 server:
   port: 8080
   ssl:

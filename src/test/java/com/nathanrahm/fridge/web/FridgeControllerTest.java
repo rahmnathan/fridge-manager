@@ -11,6 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +31,7 @@ public class FridgeControllerTest {
 
     @Test
     public void storeFridgeTest() {
-        URI location = template.postForLocation("http://localhost:" + port + PathConstants.V1_ROOT, new FridgeRequest("Name"), new HashMap<>());
+        URI location = template.postForLocation("http://localhost:" + port + PathConstants.V1_ROOT, new FridgeRequest(new HashMap<>(), UUID.randomUUID().toString()), new HashMap<>());
         assertNotNull(location);
         assertTrue(location.toString().matches(PathConstants.V1_ROOT + "/(.*)"));
     }

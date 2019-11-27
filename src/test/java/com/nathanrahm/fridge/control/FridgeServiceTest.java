@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,7 +67,7 @@ public class FridgeServiceTest {
 
     @Test
     public void deleteFridgeTest() {
-        String id = fridgeService.storeFridge(new FridgeRequest(UUID.randomUUID().toString()));
+        String id = fridgeService.storeFridge(new FridgeRequest(new HashMap<>(), UUID.randomUUID().toString()));
 
         fridgeService.deleteFridge(id);
 
@@ -77,7 +78,7 @@ public class FridgeServiceTest {
     public void getFridgeByNameTest() throws FridgeManagerException {
         String name = UUID.randomUUID().toString();
 
-        fridgeService.storeFridge(new FridgeRequest(name));
+        fridgeService.storeFridge(new FridgeRequest(new HashMap<>(), name));
         Fridge fridge = fridgeService.getFridgeByName(name);
 
         assertNotNull(fridge);
@@ -86,7 +87,7 @@ public class FridgeServiceTest {
 
     @Test
     public void getFridgesTest() {
-        fridgeService.storeFridge(new FridgeRequest(UUID.randomUUID().toString()));
+        fridgeService.storeFridge(new FridgeRequest(new HashMap<>(), UUID.randomUUID().toString()));
 
         List<Fridge> fridges = fridgeService.getFridges(Pageable.unpaged());
         assertTrue(fridges.size() >= 1);

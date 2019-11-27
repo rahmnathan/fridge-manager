@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @Entity
@@ -27,6 +28,8 @@ public class Fridge {
     private LocalDateTime created;
     private LocalDateTime updated;
 
+    @ElementCollection
+    private Map<String, Integer> items;
     private String fridgeId;
     private String name;
 
@@ -46,6 +49,7 @@ public class Fridge {
                 .created(this.created)
                 .updated(this.updated)
                 .name(this.name)
+                .items(this.items)
                 .id(this.fridgeId)
                 .build();
     }
@@ -53,6 +57,7 @@ public class Fridge {
     public static Fridge fromFridgeRequest(FridgeRequest fridge) {
         return builder()
                 .name(fridge.getName())
+                .items(fridge.getItems())
                 .build();
     }
 

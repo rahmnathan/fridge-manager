@@ -11,8 +11,8 @@ public class FridgeManagerException extends Exception {
         this.code = code;
     }
 
-    public FridgeManagerException(FridgeManagerCode code, String message, Throwable throwable) {
-        super(message, throwable);
+    public FridgeManagerException(FridgeManagerCode code, Throwable throwable) {
+        super(throwable);
         this.code = code;
     }
 }

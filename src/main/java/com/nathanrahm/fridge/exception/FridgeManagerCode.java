@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum FridgeManagerCode {
     FRIDGE_EXISTS(HttpStatus.BAD_REQUEST),
-    SODA_CANS_EXCEEDED(HttpStatus.BAD_REQUEST),
+    ITEM_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST),
     UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR),
     FRIDGE_NOT_FOUND(HttpStatus.NOT_FOUND);
 
