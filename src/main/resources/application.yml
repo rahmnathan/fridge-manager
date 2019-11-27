@@ -1,0 +1,53 @@
+endpoints.prometheus.enabled: true
+
+logging:
+  pattern.level: "correlation-id=%X{x-correlation-id}"
+  level:
+    com.nathanrahm: info
+
+server:
+  port: 8080
+  ssl:
+    enabled: false
+
+spring:
+  datasource:
+    password: pw123
+    url: "jdbc:postgresql://localhost:5432/localmovies"
+    username: localmovies
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    properties.hibernate.jdbc.lob.non_contextual_creation: true
+    show-sql: false
+
+keycloak:
+  auth-server-url: https://localmovies.hopto.org/auth
+  public-client: true
+  realm: LocalMovies
+  resource: localmovie-login
+  security-constraints:
+    - authRoles:
+        - movieuser
+      security-collections:
+        - name: "secure stuff"
+          patterns:
+            - "/*"
+  ssl-required: external
+  enabled: false
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    export:
+      prometheus:
+        enabled: true

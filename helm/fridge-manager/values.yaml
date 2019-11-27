@@ -1,0 +1,4 @@
+fridge:
+    imageRepository: rahmnathan
+    postgresIp: postgres-postgresql.default
+    vaultToken: <vault-token>
