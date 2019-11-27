@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jre-alpine
+FROM adoptopenjdk/openjdk11:alpine-jre
 
 RUN groupadd fridge-manager && useradd fridge-manager -g fridge-manager && mkdir -p /opt/fridge-manager/config
 
