@@ -13,5 +13,5 @@ data:
   spring.cloud.vault.authentication: TOKEN
   spring.cloud.vault.generic.enabled: false
   spring.cloud.vault.kv.enabled: true
-  spring.cloud.vault.kv.backend: fridge-manager
+  spring.cloud.vault.kv.backend: projects
   spring.cloud.vault.token: {{ .Values.fridge.vaultToken }}
