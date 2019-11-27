@@ -1,6 +1,7 @@
 package com.nathanrahm.fridge.control;
 
 import com.nathanrahm.fridge.data.Fridge;
+import com.nathanrahm.fridge.data.FridgeRequest;
 import com.nathanrahm.fridge.exception.FridgeManagerCode;
 import com.nathanrahm.fridge.exception.FridgeManagerException;
 import com.nathanrahm.fridge.persistence.FridgeRepository;
@@ -45,8 +46,8 @@ public class FridgeService {
     }
 
     @Transactional
-    public String storeFridge(Fridge fridge) {
-        com.nathanrahm.fridge.persistence.Fridge fridgeEntity = com.nathanrahm.fridge.persistence.Fridge.fromDTO(fridge);
+    public String storeFridge(FridgeRequest fridgeRequest) {
+        com.nathanrahm.fridge.persistence.Fridge fridgeEntity = com.nathanrahm.fridge.persistence.Fridge.fromFridgeRequest(fridgeRequest);
         String fridgeId = UUID.randomUUID().toString();
         fridgeEntity.setFridgeId(fridgeId);
 
@@ -61,14 +62,14 @@ public class FridgeService {
     }
 
     @Transactional
-    public void updateFridge(String id, Fridge fridge) throws FridgeManagerException {
+    public void updateFridge(String id, FridgeRequest fridge) throws FridgeManagerException {
         Optional<com.nathanrahm.fridge.persistence.Fridge> fridgeOptional = repository.findByFridgeId(id);
         if(fridgeOptional.isEmpty()){
             throw new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist.");
         }
 
         com.nathanrahm.fridge.persistence.Fridge fridgeEntity = fridgeOptional.get();
-        fridgeEntity.mergeDTO(fridge);
+        fridgeEntity.mergeFridgeRequest(fridge);
         repository.save(fridgeEntity);
     }
 }

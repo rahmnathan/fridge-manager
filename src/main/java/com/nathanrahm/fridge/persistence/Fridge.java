@@ -1,5 +1,6 @@
 package com.nathanrahm.fridge.persistence;
 
+import com.nathanrahm.fridge.data.FridgeRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,16 +50,13 @@ public class Fridge {
                 .build();
     }
 
-    public static Fridge fromDTO(com.nathanrahm.fridge.data.Fridge fridge) {
+    public static Fridge fromFridgeRequest(FridgeRequest fridge) {
         return builder()
-                .created(fridge.getCreated())
-                .updated(fridge.getUpdated())
                 .name(fridge.getName())
-                .fridgeId(fridge.getId())
                 .build();
     }
 
-    public void mergeDTO(com.nathanrahm.fridge.data.Fridge fridge){
+    public void mergeFridgeRequest(FridgeRequest fridge){
         this.name = fridge.getName();
     }
 }

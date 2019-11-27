@@ -2,6 +2,7 @@ package com.nathanrahm.fridge.web;
 
 import com.nathanrahm.fridge.control.FridgeService;
 import com.nathanrahm.fridge.data.Fridge;
+import com.nathanrahm.fridge.data.FridgeRequest;
 import com.nathanrahm.fridge.exception.FridgeManagerException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class FridgeController {
     }
 
     @PostMapping(value = V1_ROOT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity storeFridge(@RequestBody Fridge fridge) {
+    public ResponseEntity storeFridge(@RequestBody FridgeRequest fridge) {
         logger.info("Request received to store fridge.");
         logger.debug("Request body: {}", fridge);
 
@@ -65,7 +66,7 @@ public class FridgeController {
     }
 
     @PatchMapping(value = V1_ROOT + "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateFridge(@RequestBody Fridge fridge, @PathVariable("id") String id) throws FridgeManagerException {
+    public ResponseEntity updateFridge(@RequestBody FridgeRequest fridge, @PathVariable("id") String id) throws FridgeManagerException {
         logger.info("Request received to update fridge with id: {}.", id);
         logger.debug("Request body: {}", fridge);
 
