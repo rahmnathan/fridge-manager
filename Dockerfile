@@ -1,6 +1,6 @@
 FROM adoptopenjdk/openjdk11:alpine-jre
 
-RUN groupadd fridge-manager && useradd fridge-manager -g fridge-manager && mkdir -p /opt/fridge-manager/config
+RUN addgroup -S fridge-manager && adduser -S fridge-manager -G fridge-manager && mkdir -p /opt/fridge-manager/config
 
 ARG JAR_FILE
 ADD target/$JAR_FILE /opt/fridge-manager/fridge-manager.jar
