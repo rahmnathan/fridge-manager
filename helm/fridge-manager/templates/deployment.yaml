@@ -30,7 +30,7 @@ spec:
           terminationMessagePolicy: File
           volumeMounts:
             - name: application-config
-              mountPath: /opt/localmovie/config
+              mountPath: /opt/fridge-manager/config
               readOnly: true
       volumes:
         - name: application-config
