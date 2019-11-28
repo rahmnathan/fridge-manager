@@ -12,6 +12,9 @@ This is a Maven project which supports all of the standard goals. This command w
 mvn clean package
 ```
 
+<h3>Test Coverage</h3>
+Test coverage data is available in the ./target/site/jacoco directory after tests are run.
+
 <h3>Docker</h3>
 A Docker image can be created by running the following command.
 
