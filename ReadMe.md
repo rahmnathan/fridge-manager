@@ -34,4 +34,4 @@ mvn clean install
 ```
 
 <h3>ToDo</h3>
- * Extend unit test coverage.
+* Extend unit test coverage.
