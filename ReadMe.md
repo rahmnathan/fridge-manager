@@ -3,7 +3,7 @@
 [![Build Status](https://jenkins.nathanrahm.com/buildStatus/icon?job=fridge-manager)](https://jenkins.nathanrahm.com/job/fridge-manager/)
 
 <h3>Pipeline</h3>
-Jenkins pipeline script is found in jenkins.groovy file. This pipeline file is providing the above build status.
+Jenkins pipeline script is found in the jenkins.groovy file. This pipeline file is providing the above build status.
 
 <h3>Compile - Package - Test</h3>
 This is a Maven project which supports all of the standard goals. This command will compile, package, and test the project.
