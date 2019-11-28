@@ -29,7 +29,7 @@ public class Fridge {
     private LocalDateTime created;
     private LocalDateTime updated;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, Integer> items;
     private String fridgeId;
     private String name;

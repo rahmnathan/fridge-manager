@@ -10,6 +10,10 @@ spring:
     properties.hibernate.jdbc.lob.non_contextual_creation: true
     show-sql: false
 
+service:
+  fridgeItemMaximums:
+    soda: 12
+
 keycloak:
   auth-server-url: https://login.nathanrahm.com/auth
   public-client: true
