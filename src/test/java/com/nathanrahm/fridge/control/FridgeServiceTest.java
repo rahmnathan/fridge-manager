@@ -66,7 +66,7 @@ public class FridgeServiceTest {
     }
 
     @Test
-    public void deleteFridgeTest() {
+    public void deleteFridgeTest() throws FridgeManagerException {
         String id = fridgeService.storeFridge(new FridgeRequest(new HashMap<>(), UUID.randomUUID().toString()));
 
         fridgeService.deleteFridge(id);
@@ -86,7 +86,7 @@ public class FridgeServiceTest {
     }
 
     @Test
-    public void getFridgesTest() {
+    public void getFridgesTest() throws FridgeManagerException {
         fridgeService.storeFridge(new FridgeRequest(new HashMap<>(), UUID.randomUUID().toString()));
 
         List<Fridge> fridges = fridgeService.getFridges(Pageable.unpaged());
