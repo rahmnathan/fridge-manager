@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface FridgeRepository extends JpaRepository<Fridge, Long> {
     Optional<Fridge> findByFridgeId(String id);
     Optional<Fridge> findByName(String name);
+    boolean existsByName(String name);
     void deleteByFridgeId(String id);
 }

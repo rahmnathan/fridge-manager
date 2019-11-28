@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -62,6 +63,37 @@ public class Fridge {
     }
 
     public void mergeFridgeRequest(FridgeRequest fridge){
+        this.items = fridge.getItems();
         this.name = fridge.getName();
+    }
+
+    public void addItems(Map<String, Integer> inputItems) {
+        if (this.items == null) {
+            this.items = new HashMap<>();
+        }
+
+        for (Map.Entry<String, Integer> inputItemEntry : inputItems.entrySet()) {
+            Integer newValue = inputItemEntry.getValue() + items.getOrDefault(inputItemEntry.getKey(), 0);
+            items.put(inputItemEntry.getKey(), newValue);
+        }
+    }
+
+    public void removeItems(Map<String, Integer> inputItems) {
+        if (this.items == null) {
+            this.items = new HashMap<>();
+        }
+
+        for (Map.Entry<String, Integer> inputItemEntry : inputItems.entrySet()) {
+            String key = inputItemEntry.getKey();
+            if(items.containsKey(key)){
+                Integer value = items.get(key);
+                value = value - inputItemEntry.getValue();
+                if(value <= 0){
+                    items.remove(key);
+                } else {
+                    items.put(key, value);
+                }
+            }
+        }
     }
 }

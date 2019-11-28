@@ -15,7 +15,9 @@ public class FridgeManagerExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<String> handleException(Exception exception) throws JsonProcessingException {
-        return handleException(new FridgeManagerException(FridgeManagerCode.UNKNOWN_ERROR, exception));
+        logger.error("Exception occurred while processing request.", exception);
+        FridgeManagerResponse response = new FridgeManagerResponse(FridgeManagerCode.UNKNOWN_ERROR, getRootMessage(exception));
+        return ResponseEntity.status(response.getCode().getStatus()).body(MAPPER.writeValueAsString(response));
     }
 
     @ExceptionHandler(value = FridgeManagerException.class)

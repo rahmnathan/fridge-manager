@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,21 +24,13 @@ public class FridgeService {
     private final ServiceConfig config;
 
     public Fridge getFridgeById(String id) throws FridgeManagerException {
-        Optional<com.nathanrahm.fridge.persistence.Fridge> fridge = repository.findByFridgeId(id);
-        if(fridge.isPresent()){
-            return fridge.get().toDTO();
-        }
-
-        throw new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Fridge not found for ID.");
+        return repository.findByFridgeId(id).map(com.nathanrahm.fridge.persistence.Fridge::toDTO)
+                .orElseThrow(() -> new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Fridge not found for ID."));
     }
 
     public Fridge getFridgeByName(String name) throws FridgeManagerException {
-        Optional<com.nathanrahm.fridge.persistence.Fridge> fridge = repository.findByName(name);
-        if(fridge.isPresent()){
-            return fridge.get().toDTO();
-        }
-
-        throw new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Fridge not found for ID.");
+        return repository.findByName(name).map(com.nathanrahm.fridge.persistence.Fridge::toDTO)
+                .orElseThrow(() -> new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Fridge not found for ID."));
     }
 
     public List<Fridge> getFridges(Pageable pageable) {
@@ -49,7 +40,11 @@ public class FridgeService {
     }
 
     @Transactional
-    public String storeFridge(FridgeRequest fridgeRequest) {
+    public String storeFridge(FridgeRequest fridgeRequest) throws FridgeManagerException {
+        if(repository.existsByName(fridgeRequest.getName())){
+            throw new FridgeManagerException(FridgeManagerCode.FRIDGE_EXISTS, "Fridge with name already exists.");
+        }
+
         com.nathanrahm.fridge.persistence.Fridge fridgeEntity = com.nathanrahm.fridge.persistence.Fridge.fromFridgeRequest(fridgeRequest);
         String fridgeId = UUID.randomUUID().toString();
         fridgeEntity.setFridgeId(fridgeId);
@@ -68,13 +63,29 @@ public class FridgeService {
     public void updateFridge(String id, FridgeRequest fridge) throws FridgeManagerException {
         validateItems(fridge.getItems());
 
-        Optional<com.nathanrahm.fridge.persistence.Fridge> fridgeOptional = repository.findByFridgeId(id);
-        if(fridgeOptional.isEmpty()){
-            throw new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist.");
-        }
+        com.nathanrahm.fridge.persistence.Fridge fridgeEntity = repository.findByFridgeId(id)
+                .orElseThrow(() -> new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist."));
 
-        com.nathanrahm.fridge.persistence.Fridge fridgeEntity = fridgeOptional.get();
         fridgeEntity.mergeFridgeRequest(fridge);
+        repository.save(fridgeEntity);
+    }
+
+    @Transactional
+    public void addItems(String id, Map<String, Integer> items) throws FridgeManagerException {
+        com.nathanrahm.fridge.persistence.Fridge fridgeEntity = repository.findByFridgeId(id)
+                .orElseThrow(() -> new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist."));
+
+        fridgeEntity.addItems(items);
+        validateItems(fridgeEntity.getItems());
+        repository.save(fridgeEntity);
+    }
+
+    @Transactional
+    public void removeItems(String id, Map<String, Integer> items) throws FridgeManagerException {
+        com.nathanrahm.fridge.persistence.Fridge fridgeEntity = repository.findByFridgeId(id)
+                .orElseThrow(() -> new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist."));
+
+        fridgeEntity.removeItems(items);
         repository.save(fridgeEntity);
     }
 
@@ -84,11 +95,15 @@ public class FridgeService {
         }
 
         for(Map.Entry<String, Integer> requestItem : items.entrySet()){
-            if(config.getFridgeItemMaximums().containsKey(requestItem.getKey())) {
-                Integer configuredMaximum = config.getFridgeItemMaximums().get(requestItem.getKey());
-                if(requestItem.getValue() > configuredMaximum) {
-                    throw new FridgeManagerException(FridgeManagerCode.ITEM_LIMIT_EXCEEDED, "Item limit exceeded for " + requestItem.getKey());
-                }
+            validateItem(requestItem);
+        }
+    }
+
+    private void validateItem(Map.Entry<String, Integer> requestItem) throws FridgeManagerException {
+        if(config.getFridgeItemMaximums().containsKey(requestItem.getKey())) {
+            Integer configuredMaximum = config.getFridgeItemMaximums().get(requestItem.getKey());
+            if(requestItem.getValue() > configuredMaximum) {
+                throw new FridgeManagerException(FridgeManagerCode.ITEM_LIMIT_EXCEEDED, "Item limit exceeded for " + requestItem.getKey());
             }
         }
     }

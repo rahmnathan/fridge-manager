@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import static com.nathanrahm.fridge.web.PathConstants.*;
 
@@ -55,7 +56,7 @@ public class FridgeController {
     }
 
     @PostMapping(value = V1_ROOT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity storeFridge(@RequestBody FridgeRequest fridge) {
+    public ResponseEntity storeFridge(@RequestBody FridgeRequest fridge) throws FridgeManagerException {
         logger.info("Request received to store fridge.");
         logger.debug("Request body: {}", fridge);
 
@@ -83,5 +84,25 @@ public class FridgeController {
         fridgeService.deleteFridge(id);
 
         logger.info("Successfully processed request to delete fridge.");
+    }
+
+    @PostMapping(value = V1_ROOT + "/{id}/items", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addItems(@RequestBody Map<String, Integer> items, @PathVariable("id") String id) throws FridgeManagerException {
+        logger.info("Request received to add items to fridge with id: {}.", id);
+        logger.debug("Request body: {}", items);
+
+        fridgeService.addItems(id, items);
+
+        logger.info("Successfully processed request to add items to fridge.");
+    }
+
+    @DeleteMapping(value = V1_ROOT + "/{id}/items", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void removeItems(@RequestBody Map<String, Integer> items, @PathVariable("id") String id) throws FridgeManagerException {
+        logger.info("Request received to delete items to fridge with id: {}.", id);
+        logger.debug("Request body: {}", items);
+
+        fridgeService.removeItems(id, items);
+
+        logger.info("Successfully processed request to delete items from fridge.");
     }
 }
