@@ -8,6 +8,8 @@ This project provides a REST API that facilitates fridge management.
 REST API documentation is provided via Swagger at the service's root URL. This page also provides the ability to run test 
 transactions against the service.
 
+***The 'get fridge list' documentation/test request in the Swagger docs are currently invalid due to the use of the Pageable helper object.
+
 <h3>Pipeline</h3>
 Jenkins pipeline script is found in the jenkins.groovy file. This pipeline file is providing the above build status.
 
@@ -49,5 +51,6 @@ mvn clean install
 ```
 
 <h3>ToDo</h3>
+* Fix 'get fridge list' Swagger documentation.
 * Extend unit test coverage.
 * Add auditing.
