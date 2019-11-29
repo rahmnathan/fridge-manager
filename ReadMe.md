@@ -52,5 +52,6 @@ mvn clean install
 
 <h3>ToDo</h3>
 * Fix 'get fridge list' Swagger documentation.
+* Extend Swagger docs to include more detailed descriptions and error message examples.
 * Extend unit test coverage.
 * Add auditing.
