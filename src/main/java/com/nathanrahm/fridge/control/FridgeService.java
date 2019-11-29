@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class FridgeService {
     }
 
     @Transactional
-    public String storeFridge(FridgeRequest fridgeRequest) throws FridgeManagerException {
+    public Fridge storeFridge(FridgeRequest fridgeRequest) throws FridgeManagerException {
         if(repository.existsByName(fridgeRequest.getName())){
             throw new FridgeManagerException(FridgeManagerCode.FRIDGE_EXISTS, "Fridge with name already exists.");
         }
@@ -49,9 +50,7 @@ public class FridgeService {
         String fridgeId = UUID.randomUUID().toString();
         fridgeEntity.setFridgeId(fridgeId);
 
-        repository.save(fridgeEntity);
-
-        return fridgeId;
+        return repository.save(fridgeEntity).toDTO();
     }
 
     @Transactional
@@ -60,33 +59,29 @@ public class FridgeService {
     }
 
     @Transactional
-    public void updateFridge(String id, FridgeRequest fridge) throws FridgeManagerException {
+    public Fridge updateFridge(String id, FridgeRequest fridge) throws FridgeManagerException {
         validateItems(fridge.getItems());
 
         com.nathanrahm.fridge.persistence.Fridge fridgeEntity = repository.findByFridgeId(id)
                 .orElseThrow(() -> new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist."));
 
+        if(!StringUtils.isEmpty(fridge.getName()) && !fridge.getName().equals(fridgeEntity.getName())
+                && repository.existsByName(fridge.getName())){
+            throw new FridgeManagerException(FridgeManagerCode.FRIDGE_NAME_EXISTS, "Fridge with name already exists.");
+        }
+
         fridgeEntity.mergeFridgeRequest(fridge);
-        repository.save(fridgeEntity);
+        return repository.save(fridgeEntity).toDTO();
     }
 
     @Transactional
-    public void addItems(String id, Map<String, Integer> items) throws FridgeManagerException {
+    public Fridge updateItems(String id, Map<String, Integer> items) throws FridgeManagerException {
         com.nathanrahm.fridge.persistence.Fridge fridgeEntity = repository.findByFridgeId(id)
                 .orElseThrow(() -> new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist."));
 
-        fridgeEntity.addItems(items);
+        fridgeEntity.updateItems(items);
         validateItems(fridgeEntity.getItems());
-        repository.save(fridgeEntity);
-    }
-
-    @Transactional
-    public void removeItems(String id, Map<String, Integer> items) throws FridgeManagerException {
-        com.nathanrahm.fridge.persistence.Fridge fridgeEntity = repository.findByFridgeId(id)
-                .orElseThrow(() -> new FridgeManagerException(FridgeManagerCode.FRIDGE_NOT_FOUND, "Requested fridge does not exist."));
-
-        fridgeEntity.removeItems(items);
-        repository.save(fridgeEntity);
+        return repository.save(fridgeEntity).toDTO();
     }
 
     private void validateItems(Map<String, Integer> items) throws FridgeManagerException {

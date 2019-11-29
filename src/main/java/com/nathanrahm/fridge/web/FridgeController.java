@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.nathanrahm.fridge.web.PathConstants.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class FridgeController {
     private final Logger logger = LoggerFactory.getLogger(FridgeController.class);
     private final FridgeService fridgeService;
 
-    @GetMapping(value = V1_ROOT + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = V1_ROOT + "/{id}", produces = APPLICATION_JSON_VALUE)
     public Fridge getFridgeById(@PathVariable("id") String id) throws FridgeManagerException {
         logger.info("Request received for fridge with id: {}", id);
 
@@ -34,7 +35,7 @@ public class FridgeController {
         return fridge;
     }
 
-    @GetMapping(value = V1_NAME + "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = V1_NAME + "/{name}", produces = APPLICATION_JSON_VALUE)
     public Fridge getFridgeByName(@PathVariable("name") String name) throws FridgeManagerException {
         logger.info("Request received for fridge with name: {}", name);
 
@@ -44,40 +45,42 @@ public class FridgeController {
         return fridge;
     }
 
-    @GetMapping(value = V1_ROOT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = V1_ROOT, produces = APPLICATION_JSON_VALUE)
     public List<Fridge> getFridges(Pageable pageable) {
         logger.info("Request received for fridge list.");
         logger.debug("Paged request: {}", pageable);
 
         List<Fridge> fridges = fridgeService.getFridges(pageable);
 
-        logger.info("Successfully processed request for fridge list.");
+        logger.info("Successfully processed request for fridge list. Returning list of size: {}.", fridges.size());
         return fridges;
     }
 
-    @PostMapping(value = V1_ROOT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity storeFridge(@RequestBody FridgeRequest fridge) throws FridgeManagerException {
+    @PostMapping(value = V1_ROOT, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Fridge> storeFridge(@RequestBody FridgeRequest fridgeRequest) throws FridgeManagerException {
         logger.info("Request received to store fridge.");
-        logger.debug("Request body: {}", fridge);
+        logger.debug("Request body: {}", fridgeRequest);
 
-        String id = fridgeService.storeFridge(fridge);
+        Fridge fridge = fridgeService.storeFridge(fridgeRequest);
 
-        logger.info("Successfully processed request for fridge list.");
-        return ResponseEntity.created(URI.create(V1_ROOT + "/" + id)).build();
+        logger.info("Successfully processed request to store fridge.");
+        logger.debug("Response body: {}", fridge);
+        return ResponseEntity.created(URI.create(V1_ROOT + "/" + fridge.getId())).body(fridge);
     }
 
-    @PatchMapping(value = V1_ROOT + "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateFridge(@RequestBody FridgeRequest fridge, @PathVariable("id") String id) throws FridgeManagerException {
+    @PatchMapping(value = V1_ROOT + "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Fridge> updateFridge(@RequestBody FridgeRequest fridgeRequest, @PathVariable("id") String id) throws FridgeManagerException {
         logger.info("Request received to update fridge with id: {}.", id);
-        logger.debug("Request body: {}", fridge);
+        logger.debug("Request body: {}", fridgeRequest);
 
-        fridgeService.updateFridge(id, fridge);
+        Fridge fridge = fridgeService.updateFridge(id, fridgeRequest);
 
         logger.info("Successfully processed request for fridge list.");
-        return ResponseEntity.created(URI.create(V1_ROOT + "/" + id)).build();
+        logger.debug("Response body: {}", fridge);
+        return ResponseEntity.created(URI.create(V1_ROOT + "/" + id)).body(fridge);
     }
 
-    @DeleteMapping(value = V1_ROOT + "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = V1_ROOT + "/{id}")
     public void deleteFridge(@PathVariable("id") String id) {
         logger.info("Request received to delete fridge with id: {}.", id);
 
@@ -86,23 +89,15 @@ public class FridgeController {
         logger.info("Successfully processed request to delete fridge.");
     }
 
-    @PostMapping(value = V1_ROOT + "/{id}/items", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addItems(@RequestBody Map<String, Integer> items, @PathVariable("id") String id) throws FridgeManagerException {
-        logger.info("Request received to add items to fridge with id: {}.", id);
+    @PatchMapping(value = V1_ROOT + "/{id}/items", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public Fridge updateItems(@RequestBody Map<String, Integer> items, @PathVariable("id") String id) throws FridgeManagerException {
+        logger.info("Request received to update items in fridge with id: {}.", id);
         logger.debug("Request body: {}", items);
 
-        fridgeService.addItems(id, items);
+        Fridge fridge = fridgeService.updateItems(id, items);
 
-        logger.info("Successfully processed request to add items to fridge.");
-    }
-
-    @DeleteMapping(value = V1_ROOT + "/{id}/items", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removeItems(@RequestBody Map<String, Integer> items, @PathVariable("id") String id) throws FridgeManagerException {
-        logger.info("Request received to delete items to fridge with id: {}.", id);
-        logger.debug("Request body: {}", items);
-
-        fridgeService.removeItems(id, items);
-
-        logger.info("Successfully processed request to delete items from fridge.");
+        logger.info("Successfully processed request to update items in fridge.");
+        logger.debug("Response body: {}", fridge);
+        return fridge;
     }
 }

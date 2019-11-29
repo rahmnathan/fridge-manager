@@ -34,8 +34,7 @@ public class FridgeServiceTest {
                 .name(fridgeName)
                 .build();
 
-        String id = fridgeService.storeFridge(fridge);
-        Fridge resultFridge = fridgeService.getFridgeById(id);
+        Fridge resultFridge = fridgeService.storeFridge(fridge);
 
         assertNotNull(resultFridge);
         assertEquals(fridgeName, resultFridge.getName());
@@ -53,7 +52,7 @@ public class FridgeServiceTest {
         Fridge.FridgeBuilder fridgeBuilder = Fridge.builder()
                 .name(fridgeName);
 
-        String fridgeId = fridgeService.storeFridge(fridgeBuilder.build());
+        String fridgeId = fridgeService.storeFridge(fridgeBuilder.build()).getId();
 
         String newName = UUID.randomUUID().toString();
         Fridge updatedFridge = fridgeBuilder.id(fridgeId)
@@ -68,7 +67,7 @@ public class FridgeServiceTest {
 
     @Test
     public void deleteFridgeTest() throws FridgeManagerException {
-        String id = fridgeService.storeFridge(new FridgeRequest(new HashMap<>(), UUID.randomUUID().toString()));
+        String id = fridgeService.storeFridge(new FridgeRequest(new HashMap<>(), UUID.randomUUID().toString())).getId();
 
         fridgeService.deleteFridge(id);
 
@@ -95,30 +94,18 @@ public class FridgeServiceTest {
     }
 
     @Test
-    public void addItemsTest() throws FridgeManagerException {
-        String id = fridgeService.storeFridge(new FridgeRequest(Map.of("soda", 4), UUID.randomUUID().toString()));
-        fridgeService.addItems(id, Map.of("soda", 4, "test-item", 5));
+    public void updateItemsTest() throws FridgeManagerException {
+        String id = fridgeService.storeFridge(new FridgeRequest(Map.of("soda", 4), UUID.randomUUID().toString())).getId();
 
-        Fridge fridge = fridgeService.getFridgeById(id);
+        Fridge fridge = fridgeService.updateItems(id, Map.of("soda", -2, "test-item", 5));
 
-        assertEquals(8, fridge.getItems().get("soda"));
+        assertEquals(2, fridge.getItems().get("soda"));
         assertEquals(5, fridge.getItems().get("test-item"));
     }
 
     @Test
     public void addItemsExceedLimitTest() throws FridgeManagerException {
-        String id = fridgeService.storeFridge(new FridgeRequest(Map.of("soda", 4), UUID.randomUUID().toString()));
-        assertThrows(FridgeManagerException.class, () -> fridgeService.addItems(id, Map.of("soda", 20)));
-    }
-
-    @Test
-    public void removeItemsTest() throws FridgeManagerException {
-        String id = fridgeService.storeFridge(new FridgeRequest(Map.of("soda", 4, "test-item", 6), UUID.randomUUID().toString()));
-        fridgeService.removeItems(id, Map.of("soda", 4, "test-item", 4));
-
-        Fridge fridge = fridgeService.getFridgeById(id);
-
-        assertNull(fridge.getItems().get("soda"));
-        assertEquals(2, fridge.getItems().get("test-item"));
+        String id = fridgeService.storeFridge(new FridgeRequest(Map.of("soda", 4), UUID.randomUUID().toString())).getId();
+        assertThrows(FridgeManagerException.class, () -> fridgeService.updateItems(id, Map.of("soda", 20)));
     }
 }

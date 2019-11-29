@@ -2,10 +2,16 @@
 
 [![Build Status](https://jenkins.nathanrahm.com/buildStatus/icon?job=fridge-manager)](https://jenkins.nathanrahm.com/job/fridge-manager/)
 
+This project provides a REST API that facilitates fridge management.
+
+<h3>Documentation</h3>
+REST API documentation is provided via Swagger at the service's root URL. This page also provides the ability to run test 
+transactions against the service.
+
 <h3>Pipeline</h3>
 Jenkins pipeline script is found in the jenkins.groovy file. This pipeline file is providing the above build status.
 
-<h3>Compile - Package - Test</h3>
+<h3>Compile - Package - Unit Test</h3>
 This is a Maven project which supports all of the standard goals. This command will compile, package, and test the project.
 
 ```
@@ -13,7 +19,12 @@ mvn clean package
 ```
 
 <h3>Test Coverage</h3>
-Test coverage data is available in the ./target/site/jacoco directory after tests are run. Test coverage can be viewed graphically by opening the following file in a browser: target/site/jacoco/index.html.
+Test coverage data is available in the target/site/jacoco directory after tests are run. Test coverage can be viewed 
+graphically by opening the following file in a browser: target/site/jacoco/index.html.
+
+<h3>Service Tests</h3>
+There's a JMeter script located in the src/test/jmeter directory. This script will authenticate and test all endpoints 
+of the service.
 
 <h3>Docker</h3>
 A Docker image can be created by running the following command.
@@ -30,7 +41,8 @@ docker-compose up
 ```
 
 <h3>Kubernetes - Helm</h3>
-A Helm chart is included in this project. The processed Helm chart will be available in the ./target/classes/fridge-manager directory after installation.
+A Helm chart is included in this project. The processed Helm chart will be available in the target/classes/fridge-manager 
+directory after installation.
 
 ```
 mvn clean install
@@ -38,3 +50,4 @@ mvn clean install
 
 <h3>ToDo</h3>
 * Extend unit test coverage.
+* Add auditing.

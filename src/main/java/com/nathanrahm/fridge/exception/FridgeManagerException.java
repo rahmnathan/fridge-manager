@@ -10,9 +10,4 @@ public class FridgeManagerException extends Exception {
         super(message);
         this.code = code;
     }
-
-    public FridgeManagerException(FridgeManagerCode code, Throwable throwable) {
-        super(throwable);
-        this.code = code;
-    }
 }

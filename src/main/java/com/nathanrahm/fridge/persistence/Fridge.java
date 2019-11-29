@@ -67,32 +67,18 @@ public class Fridge {
         this.name = fridge.getName();
     }
 
-    public void addItems(Map<String, Integer> inputItems) {
-        if (this.items == null) {
-            this.items = new HashMap<>();
-        }
-
-        for (Map.Entry<String, Integer> inputItemEntry : inputItems.entrySet()) {
-            Integer newValue = inputItemEntry.getValue() + items.getOrDefault(inputItemEntry.getKey(), 0);
-            items.put(inputItemEntry.getKey(), newValue);
-        }
-    }
-
-    public void removeItems(Map<String, Integer> inputItems) {
+    public void updateItems(Map<String, Integer> inputItems) {
         if (this.items == null) {
             this.items = new HashMap<>();
         }
 
         for (Map.Entry<String, Integer> inputItemEntry : inputItems.entrySet()) {
             String key = inputItemEntry.getKey();
-            if(items.containsKey(key)){
-                Integer value = items.get(key);
-                value = value - inputItemEntry.getValue();
-                if(value <= 0){
-                    items.remove(key);
-                } else {
-                    items.put(key, value);
-                }
+            Integer value = items.getOrDefault(key, 0) + inputItemEntry.getValue();
+            if (value <= 0) {
+                items.remove(key);
+            } else {
+                items.put(key, value);
             }
         }
     }
