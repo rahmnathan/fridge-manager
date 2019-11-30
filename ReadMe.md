@@ -50,6 +50,10 @@ directory after installation.
 mvn clean install
 ```
 
+<h3>Metrics</h3>
+Metrics are available at the /actuator/metrics endpoint of the service. You can dig down into each metric, for example: 
+/actuator/metrics/system.cpu.usage
+
 <h3>ToDo</h3>
 
 * Fix 'get fridge list' Swagger documentation.
