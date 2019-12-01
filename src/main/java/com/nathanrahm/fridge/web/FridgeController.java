@@ -31,6 +31,7 @@ public class FridgeController {
         Fridge fridge = fridgeService.getFridgeById(id);
 
         logger.info("Successfully processed request for fridge by id.");
+        logger.debug("Response body: {}", fridge);
         return fridge;
     }
 
@@ -41,6 +42,7 @@ public class FridgeController {
         Fridge fridge = fridgeService.getFridgeByName(name);
 
         logger.info("Successfully processed request for fridge by name.");
+        logger.debug("Response body: {}", fridge);
         return fridge;
     }
 
