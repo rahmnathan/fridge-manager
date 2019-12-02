@@ -2,3 +2,10 @@ fridge:
     imageRepository: rahmnathan
     postgresIp: postgres-postgresql.default
     vaultToken: <vault-token>
+    resources:
+        requests:
+            cpu: 1
+            memory: 1G
+        limits:
+            cpu: 2
+            memory: 4G

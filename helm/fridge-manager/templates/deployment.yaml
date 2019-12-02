@@ -25,13 +25,19 @@ spec:
         - image: {{.Values.fridge.imageRepository}}/fridge-manager:@project.version@
           imagePullPolicy: IfNotPresent
           name: fridge-manager
-          resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
             - name: application-config
               mountPath: /opt/fridge-manager/config
               readOnly: true
+          resources:
+            requests:
+              memory: {{.Values.fridge.resources.requests.memory}}
+              cpu: {{.Values.fridge.resources.requests.cpu}}
+            limits:
+              memory: {{.Values.fridge.resources.limits.memory}}
+              cpu: {{.Values.fridge.resources.limits.memory}}
       volumes:
         - name: application-config
           configMap:
