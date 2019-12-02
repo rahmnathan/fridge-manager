@@ -42,6 +42,7 @@ public class FridgeService {
 
     @Transactional
     public Fridge storeFridge(FridgeRequest fridgeRequest) throws FridgeManagerException {
+        validateItems(fridgeRequest.getItems());
         if(repository.existsByName(fridgeRequest.getName())){
             throw new FridgeManagerException(FridgeManagerCode.FRIDGE_EXISTS, "Fridge with name already exists.");
         }
